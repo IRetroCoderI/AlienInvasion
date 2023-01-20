@@ -125,6 +125,9 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
+        #check for bullets that have hit aliens
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+
     def _update_screen(self):
         '''Update images on the screen, and flip to the new screen'''
         
