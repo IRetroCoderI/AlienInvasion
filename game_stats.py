@@ -7,7 +7,7 @@ class GameStats:
         self.reset_stats()
 
         """Start game in active state"""
-        self.game_active = True
+        self.game_active = False #game begins in a false state until the player presses the start button
 
     def reset_stats(self):
         """Initialize statistics that can change during the game."""

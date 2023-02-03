@@ -7,6 +7,7 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from time import sleep
+from button import Button
 
 class AlienInvasion:
     """Overall class to manage the game assets and behavior"""
@@ -35,6 +36,10 @@ class AlienInvasion:
 
         self.create_fleet()
 
+        #Make the play button.
+        self.play_button = Button(self, "Play")
+
+
 
 
     def run_game(self):
@@ -60,7 +65,26 @@ class AlienInvasion:
                     self._check_keydown_events(event)    
                 elif event.type == pygame.KEYUP:#when keys are released
                     self._check_keyup_events(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self._check_play_button(mouse_pos)
 
+
+    def _check_play_button(self, mouse_pos):
+        """Start a new game when the player clicks play"""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            #reset the game stats
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+        #get rid of any remaining aliens and bullets
+        self.aliens.empty()
+        self.bullets.empty()
+
+        #create a new fleet and center the ship.
+        self.create_fleet()
+        self.ship.center_ship()
 
     def _check_keydown_events(self, event):
         if event.key == pygame.K_RIGHT:
@@ -156,7 +180,13 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
 
+        #Draw the play button if the game is inactive.
+        if not self.stats.game_active:
+            self.play_button.draw_button()
+
         pygame.display.flip()  #always shows up at the end of update screen function
+
+
     
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
